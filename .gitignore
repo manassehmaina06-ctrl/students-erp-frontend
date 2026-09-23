@@ -29,4 +29,6 @@ dist/
 build/
 *.log
 backend/
-_backup_*/
+_backup_20260911/
+node_modules/
+.env
