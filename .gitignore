@@ -22,13 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-node_modules/
-backup_20260911/
-.env
-dist/
-build/
-*.log
-backend/
-_backup_20260911/
-node_modules/
-.env
