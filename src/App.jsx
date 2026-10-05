@@ -30,6 +30,7 @@ import LmsResults from './lms/LmsResults';
 import LmsAttendance from './lms/LmsAttendance';
 import UnitDetail from './pages/UnitDetail';
 import LmsTimetable from './lms/LmsTimetable';
+import AssignmentGrading from './pages/AssignmentGrading';
 // Shared
 import Login from './pages/Login';
 
@@ -249,8 +250,8 @@ export default function App() {
   </RequireLmsAccess>
 } />
 <Route
-  path="/erp/units/:unitId/assignments/:assignmentId"
-  element={<RequireRole roles={['academic']}><div className="p-8">Grading page — coming in I.3</div></RequireRole>}
+  path="/erp/lecturer/units/:unitId/assignments/:assignmentId"
+  element={<RequireRole roles={['lecturer']}><AssignmentGrading /></RequireRole>}
 />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
