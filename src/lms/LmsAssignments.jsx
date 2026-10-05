@@ -80,9 +80,9 @@ export default function LmsAssignments() {
             >
               <div className="flex items-start justify-between gap-3 flex-wrap">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-mono text-purple-700">
-                    {a.unitId?.code} · {a.unitId?.name}
-                  </p>
+                <p className="text-xs font-mono text-purple-700 truncate">
+  {a.unitId?.code} · {a.unitId?.name}
+</p>
                   <h3 className="font-semibold text-gray-800 mt-1">{a.title}</h3>
                   <p className="text-xs text-gray-500 mt-1">
                     Due {new Date(a.dueDate).toLocaleDateString()} · Max {a.maxScore}
