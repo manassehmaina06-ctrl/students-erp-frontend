@@ -17,6 +17,8 @@ import Apply from './pages/Apply';
 import Landing from './pages/Landing';
 import PortalHome from './portal/PortalHome';
 import StudentLogin from './pages/StudentLogin';
+import LmsAssignments from './lms/LmsAssignments';
+import LmsAssignmentDetail from './lms/LmsAssignmentDetail';
 import TrackingDashboard from './pages/TrackingDashboard';
 
 import LmsLogin from './pages/LmsLogin';
@@ -204,7 +206,12 @@ export default function App() {
 
 <Route path="/lms/assignments" element={
   <RequireLmsAccess>
-    <LmsLayout><LmsPlaceholder icon="📝" title="Assignments" phase="Phase I" /></LmsLayout>
+    <LmsLayout><LmsAssignments /></LmsLayout>
+  </RequireLmsAccess>
+} />
+<Route path="/lms/assignments/:assignmentId" element={
+  <RequireLmsAccess>
+    <LmsLayout><LmsAssignmentDetail /></LmsLayout>
   </RequireLmsAccess>
 } />
 
