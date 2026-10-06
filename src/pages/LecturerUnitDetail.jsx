@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import StaffLayout from '../components/StaffLayout';
+import { useToast } from '../context/ToastContext';
 
 const TYPE_LABEL = {
   assignment: 'Assignment',
@@ -16,6 +17,7 @@ const emptyAssess = { name: '', type: 'assignment', number: 1, weight: 10, maxSc
 export default function LecturerUnitDetail() {
   const { unitId } = useParams();
   const navigate = useNavigate();
+  const toastApi = useToast();
 
   const [tab, setTab] = useState('assessments'); // 'assessments' | 'marks'
 
@@ -134,7 +136,7 @@ export default function LecturerUnitDetail() {
 
   const createAnnouncement = async (e) => {
     e.preventDefault();
-    if (!annForm.title.trim()) return setError('Title required');
+    if (!annForm.title.trim()) return toastApi.error('Title required');
     if (!annForm.body.trim())  return setError('Body required');
 
     const fd = new FormData();
@@ -150,7 +152,7 @@ export default function LecturerUnitDetail() {
       });
       setShowAnnModal(false);
       await loadAnnouncements();
-      setToast('Announcement posted');
+      toastApi.success('Announcement posted');
     } catch (err) {
       setError(err.response?.data?.message || err.message);
     } finally {
@@ -379,7 +381,7 @@ export default function LecturerUnitDetail() {
 
   const createAssignment = async (e) => {
     e.preventDefault();
-    if (!assignForm.title.trim()) return setError('Title required');
+    if (!assignForm.title.trim()) return toastApi.error('Title required');
     if (!assignForm.dueDate) return setError('Due date required');
     if (assignForm.linkToAssessment && (!assignForm.weight || Number(assignForm.weight) <= 0)) {
       return setError('Weight must be > 0 when linking to grade');

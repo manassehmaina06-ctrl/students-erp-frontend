@@ -45,6 +45,8 @@ import AdmissionsDashboard from './pages/AdmissionsDashboard';
 import AcademicDashboard from './pages/AcademicDashboard';
 import ApplicationDetail from './pages/ApplicationDetail';
 import FinancePendingPayments from './pages/FinancePendingPayments';
+import { ToastProvider } from './context/ToastContext';
+import { ConfirmProvider } from './components/ConfirmDialog';
 // import ApplicationDetail from './pages/ApplicationDetail';import ApplicationDetail from './pages/ApplicationDetail';
 
 // Student portal
@@ -84,6 +86,8 @@ function RequireLmsAccess({ children }) {
 export default function App() {
   return (
     <AuthProvider>
+  <ToastProvider>
+    <ConfirmProvider>
       <BrowserRouter>
         <Routes>
          <Route path="/" element={<RootRoute />} />
@@ -273,8 +277,10 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
-      </BrowserRouter>
-    </AuthProvider>
+          </BrowserRouter>
+    </ConfirmProvider>
+  </ToastProvider>
+</AuthProvider>
   );
   
 }
