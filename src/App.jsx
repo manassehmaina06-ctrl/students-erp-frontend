@@ -48,6 +48,7 @@ import FinancePendingPayments from './pages/FinancePendingPayments';
 import { ToastProvider } from './context/ToastContext';
 import { ConfirmProvider } from './components/ConfirmDialog';
 // import ApplicationDetail from './pages/ApplicationDetail';import ApplicationDetail from './pages/ApplicationDetail';
+import NotFound from './pages/NotFound';
 
 // Student portal
   import PortalFees from './portal/PortalFees';
@@ -274,7 +275,7 @@ export default function App() {
   path="/erp/lecturer/units/:unitId/assignments/:assignmentId"
   element={<RequireRole roles={['lecturer']}><AssignmentGrading /></RequireRole>}
 />
-          <Route path="*" element={<Navigate to="/" replace />} />
+   <Route path="*" element={<NotFound />} />
         </Routes>
 
           </BrowserRouter>

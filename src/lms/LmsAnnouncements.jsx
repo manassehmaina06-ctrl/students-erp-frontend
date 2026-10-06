@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
+import EmptyState from '../components/EmptyState';
 
 const PRIORITY = {
   normal:    { pill: 'bg-slate-100 text-slate-700',   bar: 'border-slate-300',  icon: '📢' },
@@ -35,11 +36,11 @@ export default function LmsAnnouncements() {
       )}
 
       {items.length === 0 ? (
-        <div className="bg-white rounded-xl shadow p-12 text-center">
-          <div className="text-5xl mb-3">🔔</div>
-          <p className="text-gray-500">No announcements yet.</p>
-          <p className="text-xs text-gray-400 mt-1">You'll see updates from your units here.</p>
-        </div>
+     <EmptyState
+  icon="🔔"
+  title="No announcements yet"
+  description="You'll see updates from your units here."
+/>
       ) : (
         <div className="space-y-3">
           {items.map((a) => {

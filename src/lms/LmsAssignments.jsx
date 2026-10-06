@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
+import EmptyState from '../components/EmptyState';
 
 const PILL = {
   pending:   'bg-yellow-100 text-yellow-800',
@@ -62,14 +63,13 @@ export default function LmsAssignments() {
       {loading ? (
         <p className="text-gray-500 text-center py-8">Loading…</p>
       ) : list.length === 0 ? (
-        <div className="bg-white rounded-xl shadow p-12 text-center">
-          <div className="text-4xl mb-3">📝</div>
-          <p className="text-gray-500">
-            {filter === 'all'
-              ? 'No assignments yet. Check back soon.'
-              : `No ${filter} assignments.`}
-          </p>
-        </div>
+    <EmptyState
+  icon="📝"
+  title={filter === 'all' ? 'No assignments yet' : `No ${filter} assignments`}
+  description={filter === 'all'
+    ? 'Check back soon — your lecturers will post them here.'
+    : 'Try a different filter.'}
+/>
       ) : (
         <div className="space-y-3">
           {list.map((a) => (
