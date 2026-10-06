@@ -33,6 +33,8 @@ import LmsAttendance from './lms/LmsAttendance';
 import UnitDetail from './pages/UnitDetail';
 import LmsTimetable from './lms/LmsTimetable';
 import LmsAnnouncements from './lms/LmsAnnouncements';
+import LmsMessages from './lms/LmsMessages';
+import StaffMessages from './pages/StaffMessages';
 import AssignmentGrading from './pages/AssignmentGrading';
 // Shared
 import Login from './pages/Login';
@@ -101,6 +103,14 @@ export default function App() {
           <Route
   path="/erp/finance/pending"
   element={<RequireRole roles={['finance']}><FinancePendingPayments /></RequireRole>}
+/>
+<Route
+  path="/erp/messages"
+  element={
+    <RequireRole roles={['lecturer', 'academic', 'finance', 'admissions']}>
+      <StaffMessages />
+    </RequireRole>
+  }
 />
 <Route
   path="/erp/clearance"
@@ -248,10 +258,9 @@ export default function App() {
 
 <Route path="/lms/messages" element={
   <RequireLmsAccess>
-    <LmsLayout><LmsPlaceholder icon="💬" title="Messages" phase="Phase J" /></LmsLayout>
+    <LmsLayout><LmsMessages /></LmsLayout>
   </RequireLmsAccess>
 } />
-
 <Route path="/lms/profile" element={
   <RequireLmsAccess>
     <LmsLayout><LmsPlaceholder icon="👤" title="My Profile" phase="Phase M" /></LmsLayout>

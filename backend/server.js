@@ -23,6 +23,7 @@ app.use('/api/fees',       require('./routes/feeRoutes'));
 app.use('/api/students', require('./routes/feeRoutes'));  
 app.use('/api/notifications', require('./routes/notificationRoutes'));// <-- new
 app.use('/api/announcements', require('./routes/announcementRoutes'));// <-- announcements
+app.use('/api/messages', require('./routes/messageRoutes'));
 app.use('/api/academic', require('./routes/academicRoutes'));
 app.use('/api/clearance', require('./routes/clearanceRoutes'));
 app.use('/api/lecturer', require('./routes/lecturerRoutes'));
