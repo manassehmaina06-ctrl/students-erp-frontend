@@ -906,75 +906,6 @@ export default function LecturerUnitDetail() {
             </div>
           </>
         )}
-     
-        {/* ===== ANNOUNCEMENTS TAB ===== */}
-        {tab === 'announcements' && (
-          <>
-            <div className="flex justify-end mb-4">
-              <button
-                onClick={openAnnModal}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
-              >
-                + New Announcement
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              {announcementsLoading ? (
-                <p className="p-6 text-center text-gray-400">Loading…</p>
-              ) : announcements.length === 0 ? (
-                <div className="bg-white rounded-xl shadow p-8 text-center text-gray-400">
-                  No announcements yet. Post one to notify your students.
-                </div>
-              ) : (
-                announcements.map((a) => (
-                  <div
-                    key={a._id}
-                    className={`bg-white rounded-xl shadow p-4 border-l-4 ${
-                      a.priority === 'urgent' ? 'border-red-500'
-                      : a.priority === 'important' ? 'border-amber-400'
-                      : 'border-gray-300'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-3 flex-wrap">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-800">{a.title}</h3>
-                        <p className="text-[10px] text-gray-400 mt-0.5">
-                          {new Date(a.createdAt).toLocaleString()}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {a.priority !== 'normal' && (
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium uppercase ${ANN_PRIORITY_PILL[a.priority]}`}>
-                            {a.priority}
-                          </span>
-                        )}
-                        <button
-                          onClick={() => deleteAnnouncement(a._id, a.title)}
-                          className="text-xs text-red-600 hover:text-red-800"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-700 whitespace-pre-wrap mt-2">{a.body}</p>
-                    {a.attachmentUrl && (
-                      <a
-                        href={a.attachmentUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 mt-2"
-                      >
-                        📎 {a.attachmentName || 'Attachment'}
-                      </a>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-          </>
-        )}
-   
       {/* Assessment modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
@@ -1067,9 +998,6 @@ export default function LecturerUnitDetail() {
             </div>
           </form>
         </div>
-
-
-
       )}
 
       {/* Attendance marking modal */}

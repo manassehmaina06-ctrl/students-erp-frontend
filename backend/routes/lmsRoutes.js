@@ -13,11 +13,13 @@ const uploadSubmission = require('../config/multerSubmission');
 const router = express.Router();
 const studentOnly = [protect, roleCheck(['student'])];
 const { getMyTimetable } = require('../controllers/timetableController');
+const { getMyAnnouncements } = require('../controllers/announcementController');
 
 
 router.get('/me/dashboard', ...studentOnly, getMyDashboard);
 router.get('/me/courses',   ...studentOnly, getMyCourses);
 router.get('/me/timetable', ...studentOnly, getMyTimetable);
+router.get('/me/announcements', ...studentOnly, getMyAnnouncements);
 
 router.get   ('/me/assignments',                 ...studentOnly, getMyAssignments);
 router.get   ('/me/assignments/:id',             ...studentOnly, getAssignmentDetail);

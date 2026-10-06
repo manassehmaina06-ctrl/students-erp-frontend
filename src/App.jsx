@@ -32,6 +32,7 @@ import LmsResults from './lms/LmsResults';
 import LmsAttendance from './lms/LmsAttendance';
 import UnitDetail from './pages/UnitDetail';
 import LmsTimetable from './lms/LmsTimetable';
+import LmsAnnouncements from './lms/LmsAnnouncements';
 import AssignmentGrading from './pages/AssignmentGrading';
 // Shared
 import Login from './pages/Login';
@@ -241,7 +242,7 @@ export default function App() {
 
 <Route path="/lms/announcements" element={
   <RequireLmsAccess>
-    <LmsLayout><LmsPlaceholder icon="🔔" title="Announcements" phase="Phase J" /></LmsLayout>
+    <LmsLayout><LmsAnnouncements /></LmsLayout>
   </RequireLmsAccess>
 } />
 
