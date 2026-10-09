@@ -27,6 +27,8 @@ import LmsDashboard from './lms/LmsDashboard';
 import LmsCourses from './lms/LmsCourses';
 import LmsCourseDetail from './lms/LmsCourseDetail';
 import LmsPlaceholder from './lms/LmsPlaceholder';
+import LmsProfile from './lms/LmsProfile';
+import StaffProfile from './pages/StaffProfile';
 import LmsMaterials from './lms/LmsMaterials';
 import LmsResults from './lms/LmsResults';
 import LmsAttendance from './lms/LmsAttendance';
@@ -268,7 +270,7 @@ export default function App() {
 } />
 <Route path="/lms/profile" element={
   <RequireLmsAccess>
-    <LmsLayout><LmsPlaceholder icon="👤" title="My Profile" phase="Phase M" /></LmsLayout>
+    <LmsLayout><LmsProfile /></LmsLayout>
   </RequireLmsAccess>
 } />
 <Route
