@@ -119,6 +119,12 @@ export default function QuizEditor() {
               >
                 + Add Question
               </button>
+              <button
+  onClick={() => navigate(`/erp/lecturer/units/${unitId}/quizzes/${quizId}/attempts`)}
+  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm"
+>
+  📊 View Attempts
+</button>
               {quiz.status === 'draft' && (
                 <button
                   onClick={publish}
@@ -127,6 +133,7 @@ export default function QuizEditor() {
                 >
                   {saving ? 'Publishing…' : 'Publish'}
                 </button>
+                
               )}
               {quiz.status === 'published' && (
                 <button
@@ -136,6 +143,7 @@ export default function QuizEditor() {
                 >
                   Close Quiz
                 </button>
+                
               )}
             </div>
           </div>

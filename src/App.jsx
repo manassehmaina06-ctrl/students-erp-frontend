@@ -43,6 +43,9 @@ import LmsQuizzes from './lms/LmsQuizzes';
 import LmsQuizTake from './lms/LmsQuizTake';
 import LmsQuizResult from './lms/LmsQuizResult';
 
+import QuizAttempts from './pages/QuizAttempts';
+import QuizAttemptGrading from './pages/QuizAttemptGrading';
+
 import QuizEditor from './pages/QuizEditor';
 // Shared
 import Login from './pages/Login';
@@ -156,6 +159,14 @@ export default function App() {
 <Route
   path="/erp/lecturer/units/:unitId/quizzes/:quizId"
   element={<RequireRole roles={['lecturer']}><QuizEditor /></RequireRole>}
+/>
+<Route
+  path="/erp/lecturer/units/:unitId/quizzes/:quizId/attempts"
+  element={<RequireRole roles={['lecturer']}><QuizAttempts /></RequireRole>}
+/>
+<Route
+  path="/erp/lecturer/units/:unitId/quizzes/:quizId/attempts/:attemptId"
+  element={<RequireRole roles={['lecturer']}><QuizAttemptGrading /></RequireRole>}
 />
 
           <Route
