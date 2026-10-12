@@ -29,7 +29,8 @@ exports.createQuiz = async (req, res) => {
 
     if (!title || !title.trim()) return res.status(400).json({ message: 'Title required' });
 
-    const semester = unit.semester || '2026-S1';
+  const currentSemester = await Semester.findOne({ isCurrent: true });
+const semester = currentSemester ? currentSemester.code : (unit.semester || '2026-S1');
 
     if (linkToAssessment && Number(weight) > 0) {
       const existing = await Assessment.find({ unitId: unit._id, semester });
@@ -269,6 +270,7 @@ exports.getMyQuizzes = async (req, res) => {
         attemptsUsed: mine.length,
         inProgressId: inProg ? inProg._id : null,
         best: best ? {
+          attemptId: best._id,
           percent: best.percent,
           score: (best.autoScore || 0) + (best.manualScore || 0),
           maxScore: best.maxScore,
@@ -405,7 +407,9 @@ exports.getMyAttempt = async (req, res) => {
     const quiz = await Quiz.findById(attempt.quizId).lean();
     const questions = await QuizQuestion.find({ quizId: attempt.quizId }).sort({ order: 1 }).lean();
 
-    const reveal = quiz.showCorrectAnswers && attempt.status === 'graded';
+    // After submission, always reveal correct answers for auto-graded questions
+    const submitted = attempt.status !== 'in-progress';
+    const reveal = submitted || (quiz.showCorrectAnswers && attempt.status === 'graded');
 
     res.json({
       attempt,

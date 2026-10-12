@@ -38,6 +38,11 @@ import LmsAnnouncements from './lms/LmsAnnouncements';
 import LmsMessages from './lms/LmsMessages';
 import StaffMessages from './pages/StaffMessages';
 import AssignmentGrading from './pages/AssignmentGrading';
+
+import LmsQuizzes from './lms/LmsQuizzes';
+import LmsQuizTake from './lms/LmsQuizTake';
+import LmsQuizResult from './lms/LmsQuizResult';
+
 import QuizEditor from './pages/QuizEditor';
 // Shared
 import Login from './pages/Login';
@@ -246,7 +251,17 @@ export default function App() {
 
 <Route path="/lms/quizzes" element={
   <RequireLmsAccess>
-    <LmsLayout><LmsPlaceholder icon="🧪" title="Quizzes & Exams" phase="Phase K" /></LmsLayout>
+    <LmsLayout><LmsQuizzes /></LmsLayout>
+  </RequireLmsAccess>
+} />
+<Route path="/lms/quizzes/:quizId/take" element={
+  <RequireLmsAccess>
+    <LmsQuizTake />
+  </RequireLmsAccess>
+} />
+<Route path="/lms/quizzes/result/:attemptId" element={
+  <RequireLmsAccess>
+    <LmsLayout><LmsQuizResult /></LmsLayout>
   </RequireLmsAccess>
 } />
 

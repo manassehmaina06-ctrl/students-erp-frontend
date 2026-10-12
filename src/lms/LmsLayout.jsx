@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { path: '/lms/courses',      label: 'My Courses',    icon: '📚' },
   { path: '/lms/timetable',    label: 'Timetable',     icon: '📅' },
   { path: '/lms/assignments',  label: 'Assignments',   icon: '📝' },
+    { path: '/lms/quizzes',      label: 'Quizzes',       icon: '🧪' },
   { path: '/lms/materials',    label: 'Materials',     icon: '📖' },
   { path: '/lms/results',      label: 'Results',       icon: '📊' },
   { path: '/lms/attendance',   label: 'Attendance',    icon: '✅' },
