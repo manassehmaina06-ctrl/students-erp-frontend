@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import PublicNavbar from '../components/PublicNavbar';
+import AiAssistant from '../components/AiAssistant';
+import { LANDING_FAQ } from '../data/landingFaq';
 
 export default function Landing() {
   return (
@@ -55,6 +57,7 @@ export default function Landing() {
           Strathmore University Portal · {new Date().getFullYear()}
         </p>
       </div>
+            <AiAssistant theme="landing" faqs={LANDING_FAQ} />
     </div>
   );
 }

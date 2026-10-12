@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NotificationBell from '../components/NotificationBell';
+import AiAssistant from '../components/AiAssistant';
+import { LMS_FAQ } from '../data/lmsFaq';
 
 const NAV_ITEMS = [
   { path: '/lms',              label: 'Dashboard',     icon: '🏠' },
@@ -123,6 +125,8 @@ export default function LmsLayout({ children }) {
       </header>
 
       <main className="px-3 sm:px-6 py-4 sm:py-6">{children}</main>
-    </div>
+      
+           <AiAssistant theme="lms" faqs={LMS_FAQ} /> 
+          </div>
   );
 }
