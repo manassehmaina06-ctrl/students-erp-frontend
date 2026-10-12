@@ -38,6 +38,7 @@ import LmsAnnouncements from './lms/LmsAnnouncements';
 import LmsMessages from './lms/LmsMessages';
 import StaffMessages from './pages/StaffMessages';
 import AssignmentGrading from './pages/AssignmentGrading';
+import QuizEditor from './pages/QuizEditor';
 // Shared
 import Login from './pages/Login';
 
@@ -146,6 +147,10 @@ export default function App() {
 <Route
   path="/erp/lecturer/units/:unitId"
   element={<RequireRole roles={['lecturer']}><LecturerUnitDetail /></RequireRole>}
+/>
+<Route
+  path="/erp/lecturer/units/:unitId/quizzes/:quizId"
+  element={<RequireRole roles={['lecturer']}><QuizEditor /></RequireRole>}
 />
 
           <Route

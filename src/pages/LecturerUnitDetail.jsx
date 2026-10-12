@@ -59,6 +59,16 @@ export default function LecturerUnitDetail() {
   const [savingAssign, setSavingAssign] = useState(false);
   const assignFileRef = useRef(null);
 
+  // Quizzes
+  const [quizzes, setQuizzes]               = useState([]);
+  const [quizzesLoading, setQuizzesLoading] = useState(false);
+  const [showQuizModal, setShowQuizModal]   = useState(false);
+  const [quizForm, setQuizForm]             = useState({
+    title: '', description: '', durationMinutes: 30, maxAttempts: 1,
+    passScore: 50, linkToAssessment: false, weight: 0, shuffleQuestions: false,
+  });
+  const [savingQuiz, setSavingQuiz] = useState(false);
+
 
   // Resources state
   const [resources, setResources]         = useState([]);
@@ -128,6 +138,86 @@ export default function LecturerUnitDetail() {
       .finally(() => setAnnouncementsLoading(false));
   };
 
+  const loadQuizzes = () => {
+    setQuizzesLoading(true);
+    return api.get(`/lecturer/units/${unitId}/quizzes`)
+      .then((r) => setQuizzes(r.data.quizzes || []))
+      .catch((err) => setError(err.response?.data?.message || err.message))
+      .finally(() => setQuizzesLoading(false));
+  };
+
+  const openQuizModal = () => {
+    setQuizForm({
+      title: '', description: '', durationMinutes: 30, maxAttempts: 1,
+      passScore: 50, linkToAssessment: false, weight: 0, shuffleQuestions: false,
+    });
+    setShowQuizModal(true);
+  };
+
+  const createQuiz = async (e) => {
+    e.preventDefault();
+    if (!quizForm.title.trim()) return setError('Title required');
+    setSavingQuiz(true); setError('');
+    try {
+      const r = await api.post(`/lecturer/units/${unitId}/quizzes`, {
+        title: quizForm.title.trim(),
+        description: quizForm.description.trim(),
+        durationMinutes: Number(quizForm.durationMinutes) || 30,
+        maxAttempts: Number(quizForm.maxAttempts) || 1,
+        passScore: Number(quizForm.passScore) || 50,
+        linkToAssessment: !!quizForm.linkToAssessment,
+        weight: quizForm.linkToAssessment ? Number(quizForm.weight) : 0,
+        shuffleQuestions: !!quizForm.shuffleQuestions,
+      });
+      setShowQuizModal(false);
+      await Promise.all([loadQuizzes(), loadAssessments()]);
+      setToast('Quiz created (draft)');
+      navigate(`/erp/lecturer/units/${unitId}/quizzes/${r.data.quiz._id}`);
+    } catch (err) {
+      setError(err.response?.data?.message || err.message);
+    } finally {
+      setSavingQuiz(false);
+    }
+  };
+
+  const deleteQuiz = async (quizId, title) => {
+    if (!window.confirm(`Delete "${title}"? All questions and attempts will be deleted.`)) return;
+    try {
+      await api.delete(`/lecturer/quizzes/${quizId}`);
+      await Promise.all([loadQuizzes(), loadAssessments()]);
+      setToast('Quiz deleted');
+    } catch (err) {
+      setError(err.response?.data?.message || err.message);
+    }
+  };
+
+  const publishQuiz = async (quizId) => {
+    try {
+      await api.post(`/lecturer/quizzes/${quizId}/publish`);
+      await Promise.all([loadQuizzes(), loadAssessments()]);
+      setToast('Quiz published');
+    } catch (err) {
+      setError(err.response?.data?.message || err.message);
+    }
+  };
+
+  const closeQuiz = async (quizId) => {
+    if (!window.confirm('Close this quiz?')) return;
+    try {
+      await api.post(`/lecturer/quizzes/${quizId}/close`);
+      await loadQuizzes();
+      setToast('Quiz closed');
+    } catch (err) {
+      setError(err.response?.data?.message || err.message);
+    }
+  };
+
+  const QUIZ_PILL = {
+    draft:     'bg-gray-100 text-gray-700',
+    published: 'bg-green-100 text-green-800',
+    closed:    'bg-blue-100 text-blue-800',
+  };
+
   const openAnnModal = () => {
     setAnnForm({ title: '', body: '', priority: 'normal', file: null });
     if (annFileRef.current) annFileRef.current.value = '';
@@ -179,7 +269,7 @@ export default function LecturerUnitDetail() {
 
   useEffect(() => {
     setLoading(true);
-      Promise.all([loadAssessments(), loadGrid(), loadSessions(), loadResources(), loadAssignments(), loadAnnouncements()])
+      Promise.all([loadAssessments(), loadGrid(), loadSessions(), loadResources(), loadAssignments(), loadAnnouncements(), loadQuizzes()])
       .catch((err) => setError(err.response?.data?.message || err.message))
       .finally(() => setLoading(false));
   }, [unitId]);;
@@ -545,6 +635,12 @@ export default function LecturerUnitDetail() {
     tab === 'announcements' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
   }`}
 >Announcements</button>
+          <button
+            onClick={() => setTab('quizzes')}
+            className={`px-4 py-2 text-sm font-medium ${
+              tab === 'quizzes' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
+            }`}
+          >Quizzes</button>
         </div>
 
         {/* ===== ASSESSMENTS TAB ===== */}
@@ -909,7 +1005,88 @@ export default function LecturerUnitDetail() {
           </>
         )}
      
-        {/* ===== ANNOUNCEMENTS TAB ===== */}
+                {/* ===== QUIZZES TAB ===== */}
+        {tab === 'quizzes' && (
+          <>
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={openQuizModal}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
+              >
+                + New Quiz
+              </button>
+            </div>
+
+            <div className="bg-white rounded-xl shadow overflow-hidden">
+              {quizzesLoading ? (
+                <p className="p-6 text-center text-gray-400">Loading…</p>
+              ) : quizzes.length === 0 ? (
+                <div className="p-8 text-center">
+                  <div className="text-5xl mb-3">🧪</div>
+                  <p className="text-gray-500">No quizzes yet.</p>
+                  <p className="text-xs text-gray-400 mt-1">Create one to test your students.</p>
+                </div>
+              ) : (
+                <table className="w-full text-left">
+                  <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
+                    <tr>
+                      <th className="px-4 py-3">Title</th>
+                      <th className="px-4 py-3">Duration</th>
+                      <th className="px-4 py-3">Questions</th>
+                      <th className="px-4 py-3">Attempts</th>
+                      <th className="px-4 py-3">Status</th>
+                      <th className="px-4 py-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {quizzes.map((q) => (
+                      <tr key={q._id} className="border-t border-gray-100 hover:bg-gray-50">
+                        <td className="px-4 py-3">
+                          <div className="font-medium text-gray-800">{q.title}</div>
+                          {q.linkToAssessment && q.weight > 0 && (
+                            <div className="text-[10px] text-purple-700">{q.weight}% of grade</div>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-xs text-gray-600">{q.durationMinutes} min</td>
+                        <td className="px-4 py-3 text-xs text-gray-600">{q.questionCount}</td>
+                        <td className="px-4 py-3 text-xs text-gray-600">{q.attemptCount}</td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${QUIZ_PILL[q.status]}`}>
+                            {q.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <button
+                            onClick={() => navigate(`/erp/lecturer/units/${unitId}/quizzes/${q._id}`)}
+                            className="text-xs text-blue-600 hover:text-blue-800 mr-3 font-medium"
+                          >Edit</button>
+                          {q.status === 'draft' && q.questionCount > 0 && (
+                            <button
+                              onClick={() => publishQuiz(q._id)}
+                              className="text-xs text-green-600 hover:text-green-800 mr-3 font-medium"
+                            >Publish</button>
+                          )}
+                          {q.status === 'published' && (
+                            <button
+                              onClick={() => closeQuiz(q._id)}
+                              className="text-xs text-gray-500 hover:text-gray-700 mr-3"
+                            >Close</button>
+                          )}
+                          <button
+                            onClick={() => deleteQuiz(q._id, q.title)}
+                            className="text-xs text-red-600 hover:text-red-800"
+                          >Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </>
+        )}
+
+{/* ===== ANNOUNCEMENTS TAB ===== */}
         {tab === 'announcements' && (
           <>
             <div className="flex justify-end mb-4">
@@ -1278,7 +1455,77 @@ export default function LecturerUnitDetail() {
       )}
     
 
-      {showAnnModal && (
+            {showQuizModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <form onSubmit={createQuiz} className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 max-h-[90vh] overflow-auto">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">New Quiz</h2>
+
+            <label className="block mb-3">
+              <span className="text-sm text-gray-600">Title</span>
+              <input type="text" required value={quizForm.title}
+                onChange={(e) => setQuizForm({ ...quizForm, title: e.target.value })}
+                placeholder="e.g. Mid-semester CAT"
+                className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2" />
+            </label>
+
+            <label className="block mb-3">
+              <span className="text-sm text-gray-600">Description (optional)</span>
+              <textarea value={quizForm.description} rows="2"
+                onChange={(e) => setQuizForm({ ...quizForm, description: e.target.value })}
+                className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2" />
+            </label>
+
+            <div className="grid grid-cols-3 gap-3 mb-3">
+              <label className="block">
+                <span className="text-sm text-gray-600">Duration (min)</span>
+                <input type="number" min="1" value={quizForm.durationMinutes}
+                  onChange={(e) => setQuizForm({ ...quizForm, durationMinutes: e.target.value })}
+                  className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2" />
+              </label>
+              <label className="block">
+                <span className="text-sm text-gray-600">Max attempts</span>
+                <input type="number" min="1" max="5" value={quizForm.maxAttempts}
+                  onChange={(e) => setQuizForm({ ...quizForm, maxAttempts: e.target.value })}
+                  className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2" />
+              </label>
+              <label className="block">
+                <span className="text-sm text-gray-600">Pass (%)</span>
+                <input type="number" min="0" max="100" value={quizForm.passScore}
+                  onChange={(e) => setQuizForm({ ...quizForm, passScore: e.target.value })}
+                  className="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2" />
+              </label>
+            </div>
+
+            <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 mb-3">
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox"
+                  checked={quizForm.linkToAssessment}
+                  onChange={(e) => setQuizForm({ ...quizForm, linkToAssessment: e.target.checked })} />
+                <span className="font-medium text-purple-900">Count toward final grade</span>
+              </label>
+              {quizForm.linkToAssessment && (
+                <label className="block mt-3">
+                  <span className="text-xs text-purple-700">Weight (%)</span>
+                  <input type="number" min="1" max="100" value={quizForm.weight}
+                    onChange={(e) => setQuizForm({ ...quizForm, weight: e.target.value })}
+                    className="mt-1 w-24 border border-purple-300 rounded-lg px-3 py-2 text-sm" />
+                </label>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4 border-t border-gray-200">
+              <button type="button" onClick={() => setShowQuizModal(false)}
+                className="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-sm">Cancel</button>
+              <button type="submit" disabled={savingQuiz}
+                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm disabled:opacity-50">
+                {savingQuiz ? 'Creating…' : 'Create & Edit'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+{showAnnModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
           <form onSubmit={createAnnouncement} className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 max-h-[90vh] overflow-auto">
             <h2 className="text-xl font-bold text-gray-800 mb-4">New Announcement</h2>
