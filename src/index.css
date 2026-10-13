@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -23,4 +25,122 @@ body {
 @keyframes slideIn {
   from { transform: translateX(120%); opacity: 0; }
   to   { transform: translateX(0);    opacity: 1; }
+}
+/* ---------- Global ---------- */
+html {
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: 'Sora', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Body background ---------- */
+body {
+  background: #f8fafc;
+  color: #0f172a;
+}
+.dark body {
+  background: #0b1220;
+  color: #e2e8f0;
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar        { width: 10px; height: 10px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: #cbd5e1; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+.dark ::-webkit-scrollbar-thumb { background: #334155; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+/* ---------- Focus ring ---------- */
+*:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* ---------- Animations (used by Toast) ---------- */
+@keyframes slideIn {
+  from { transform: translateX(120%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+/* -------------------------------------------------- */
+/* Global dark-mode overrides for common patterns    */
+/* -------------------------------------------------- */
+
+/* Base body */
+.dark body {
+  background: #0b1220;
+  color: #e2e8f0;
+}
+
+/* Common Tailwind utility overrides for dark mode */
+.dark .bg-white       { background-color: #111827 !important; }
+.dark .bg-slate-50    { background-color: #0f172a !important; }
+.dark .bg-slate-100   { background-color: #0b1220 !important; }
+.dark .bg-gray-50     { background-color: #0f172a !important; }
+.dark .bg-gray-100    { background-color: #1e293b !important; }
+
+/* Text colors */
+.dark .text-gray-800,
+.dark .text-gray-700,
+.dark .text-slate-800 { color: #e2e8f0 !important; }
+.dark .text-gray-600,
+.dark .text-gray-500,
+.dark .text-slate-600,
+.dark .text-slate-500 { color: #94a3b8 !important; }
+.dark .text-gray-400,
+.dark .text-slate-400 { color: #64748b !important; }
+
+/* Borders */
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-gray-300,
+.dark .border-slate-200,
+.dark .border-slate-100 { border-color: #1e293b !important; }
+
+/* Inputs */
+.dark input:not([type="radio"]):not([type="checkbox"]),
+.dark textarea,
+.dark select {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Tables */
+.dark table thead {
+  background-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+.dark table tbody tr {
+  border-color: #1e293b !important;
+}
+.dark table tbody tr:hover {
+  background-color: rgba(30, 41, 59, 0.5) !important;
+}
+
+/* Shadows look heavier in dark mode — soften them */
+.dark .shadow,
+.dark .shadow-sm,
+.dark .shadow-md,
+.dark .shadow-lg,
+.dark .shadow-xl,
+.dark .shadow-2xl {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4) !important;
+}
+
+/* Keep colored headers (blue/indigo) unchanged — they look good either way */
+.dark .bg-blue-700,
+.dark .bg-blue-600,
+.dark .bg-slate-900,
+.dark .bg-slate-800 {
+  /* leave as-is */
 }

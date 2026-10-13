@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import NotificationBell from '../components/NotificationBell';
 import AiAssistant from '../components/AiAssistant';
 import { LMS_FAQ } from '../data/lmsFaq';
+import ThemeToggle from '../components/ThemeToggle';
 
 const NAV_ITEMS = [
   { path: '/lms',              label: 'Dashboard',     icon: '🏠' },
@@ -35,7 +36,7 @@ export default function LmsLayout({ children }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-950">
       <header className="bg-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
@@ -51,6 +52,7 @@ export default function LmsLayout({ children }) {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
+             <ThemeToggle />
             <NotificationBell />
             <span className="hidden md:inline text-sm text-slate-300 truncate max-w-[180px]">
               {user?.username || user?.email}

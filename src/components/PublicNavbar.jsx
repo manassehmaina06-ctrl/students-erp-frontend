@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import ThemeToggle from './ThemeToggle';
 
 const BRAND = 'Strathmore';
 
@@ -19,6 +20,7 @@ export default function PublicNavbar() {
           <span className="text-2xl">🎓</span>
           <span className="font-semibold">{BRAND} University Portal</span>
         </Link>
+         <ThemeToggle />
 
         <nav className="flex items-center gap-1">
           <Link
@@ -63,6 +65,7 @@ export default function PublicNavbar() {
               to="/login?role=student"
               className="ml-2 px-3 py-1.5 text-sm bg-amber-400 hover:bg-amber-300 text-slate-900 font-medium rounded-lg"
             >
+             
               Sign in
             </Link>
           )}

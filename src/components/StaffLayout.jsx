@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NotificationBell from './NotificationBell';
+import ThemeToggle from './ThemeToggle';
+
 
 const NAV_ITEMS = [
   { path: '/erp/admissions', label: 'Admissions', icon: '🎯', roles: ['admissions'] },
@@ -28,7 +30,7 @@ export default function StaffLayout({ children }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+   <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       <header className="bg-blue-700 text-white">
         <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 sm:gap-6 min-w-0">
@@ -57,6 +59,7 @@ export default function StaffLayout({ children }) {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
+            <ThemeToggle />
             <NotificationBell />
             <span className="hidden lg:inline text-sm opacity-90 truncate max-w-[180px]">
               {user?.email}

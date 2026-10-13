@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import RequireRole from './components/RequireRole';
 import StudentsManagement from './pages/StudentsManagement';
 import PortalClearance from './portal/PortalClearance';
@@ -97,10 +98,11 @@ function RequireLmsAccess({ children }) {
 }
 export default function App() {
   return (
-    <AuthProvider>
-  <ToastProvider>
-    <ConfirmProvider>
-      <BrowserRouter>
+<ThemeProvider>
+  <AuthProvider>
+    <ToastProvider>
+      <ConfirmProvider>
+        <BrowserRouter>
         <Routes>
          <Route path="/" element={<RootRoute />} />
           <Route path="/login" element={<Login />} />
@@ -312,9 +314,10 @@ export default function App() {
         </Routes>
 
           </BrowserRouter>
-    </ConfirmProvider>
-  </ToastProvider>
-</AuthProvider>
+      </ConfirmProvider>
+    </ToastProvider>
+  </AuthProvider>
+</ThemeProvider>
   );
   
 }
