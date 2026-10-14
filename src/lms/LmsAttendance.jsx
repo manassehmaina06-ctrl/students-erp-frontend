@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
+import { PageHeader } from '../components/ui';
 
 const STATUS_PILL = {
   present:  'bg-green-100 text-green-800',
@@ -59,7 +60,11 @@ export default function LmsAttendance() {
   };
 
   if (loading) return <div className="p-8 text-slate-500">Loading…</div>;
-
+<PageHeader
+  icon="✅"
+  title="Attendance"
+  subtitle="Your class attendance record"
+/>
   if (!data?.units?.length) {
     return (
       <div className="max-w-4xl mx-auto p-6">

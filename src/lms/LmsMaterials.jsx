@@ -34,10 +34,15 @@ export default function LmsMaterials() {
   if (loading) return <div className="p-8 text-slate-500">Loading…</div>;
 
   if (!data?.units?.length) {
-    return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="bg-white rounded-xl shadow-sm p-8 text-center">
-          <p className="text-slate-500">No materials yet.</p>
+return (
+  <div className="max-w-4xl mx-auto space-y-6">
+    <PageHeader
+      icon="📖"
+      title="Materials"
+      subtitle="Lecture notes, slides, and reading lists"
+    />
+    <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+      <p className="text-slate-500">No materials yet.</p>
           <p className="text-xs text-slate-400 mt-1">
             Once your lecturers upload notes, slides, or past papers, they'll appear here.
           </p>

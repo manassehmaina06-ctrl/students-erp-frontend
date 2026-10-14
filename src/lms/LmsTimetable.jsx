@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
+import { PageHeader } from '../components/ui';
 
 const DAYS = [
   { value: 'mon', label: 'Monday',    short: 'Mon' },
@@ -65,15 +66,13 @@ export default function LmsTimetable() {
   const slots = data?.slots || [];
 
   if (slots.length === 0) {
-    return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-          <div className="text-5xl mb-4">📅</div>
-          <h1 className="text-xl font-bold text-slate-800 mb-2">No Timetable Yet</h1>
-          <p className="text-sm text-slate-500">
-            Your weekly schedule will appear here once Academic assigns classes for your units.
-          </p>
-        </div>
+return (
+  <div className="max-w-6xl mx-auto space-y-6">
+    <PageHeader
+      icon="📅"
+      title="Timetable"
+      subtitle="Your weekly class schedule"
+    />
       </div>
     );
   }

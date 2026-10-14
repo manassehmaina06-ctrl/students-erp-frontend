@@ -4,6 +4,7 @@ import api from '../api/axios';
 import EmptyState from '../components/EmptyState';
 import { LoadingState } from '../components/LoadingState';
 import { useToast } from '../context/ToastContext';
+import { PageHeader } from '../components/ui';
 
 const STATUS_PILL = {
   published: 'bg-green-100 text-green-800',
@@ -58,11 +59,11 @@ const viewResult = (quiz) => {
       </div>
 
       {items.length === 0 ? (
-        <EmptyState
-          icon="🧪"
-          title="No quizzes yet"
-          description="Your lecturers haven't posted any quizzes. Check back soon."
-        />
+    <PageHeader
+  icon="🧪"
+  title="Quizzes & Exams"
+  subtitle="Test your knowledge — one question at a time"
+/>
       ) : (
         <div className="space-y-3">
           {items.map((q) => {

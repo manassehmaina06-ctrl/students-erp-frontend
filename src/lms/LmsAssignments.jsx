@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import EmptyState from '../components/EmptyState';
+import { PageHeader } from '../components/ui';
 
 const PILL = {
   pending:   'bg-yellow-100 text-yellow-800',
@@ -30,12 +31,11 @@ export default function LmsAssignments() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Assignments</h1>
-        {data.semester && (
-          <p className="text-sm text-gray-500 mt-1">Semester {data.semester}</p>
-        )}
-      </div>
+   <PageHeader
+  icon="📝"
+  title="Assignments"
+  subtitle={data.semester ? 'Semester ' + data.semester : 'View and submit your assignments'}
+/>
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 text-sm mb-4">

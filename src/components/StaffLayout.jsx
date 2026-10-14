@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NotificationBell from './NotificationBell';
+import AiAssistant from './AiAssistant';
+import { LMS_FAQ } from '../data/lmsFaq';
 import ThemeToggle from './ThemeToggle';
 
 
@@ -124,6 +126,8 @@ export default function StaffLayout({ children }) {
       </header>
 
       <main className="px-3 sm:px-6 py-4 sm:py-6">{children}</main>
+    
+      <AiAssistant theme="lms" faqs={LMS_FAQ} />
     </div>
   );
 }
