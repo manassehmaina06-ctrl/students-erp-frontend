@@ -21,6 +21,7 @@ import StudentLogin from './pages/StudentLogin';
 import LmsAssignments from './lms/LmsAssignments';
 import LmsAssignmentDetail from './lms/LmsAssignmentDetail';
 import TrackingDashboard from './pages/TrackingDashboard';
+import ErrorBoundary from './components/ErrorBoundary';
 
 import LmsLogin from './pages/LmsLogin';
 import LmsLayout from './lms/LmsLayout';
@@ -98,6 +99,7 @@ function RequireLmsAccess({ children }) {
 }
 export default function App() {
   return (
+    <ErrorBoundary>
 <ThemeProvider>
   <AuthProvider>
     <ToastProvider>
@@ -318,6 +320,7 @@ export default function App() {
     </ToastProvider>
   </AuthProvider>
 </ThemeProvider>
+</ErrorBoundary>
   );
   
 }

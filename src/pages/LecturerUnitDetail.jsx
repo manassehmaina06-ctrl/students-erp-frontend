@@ -598,47 +598,47 @@ export default function LecturerUnitDetail() {
         )}
 
         {/* Tabs jameni  */}
-        <div className="flex gap-1 mb-6 border-b border-gray-200">
+        <div className="flex gap-1 mb-6 p-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-x-auto">
           <button
             onClick={() => setTab('assessments')}
-            className={`px-4 py-2 text-sm font-medium ${
-              tab === 'assessments' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
+            className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+              tab === 'assessments' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >Assessments</button>
           <button
             onClick={() => setTab('marks')}
-            className={`px-4 py-2 text-sm font-medium ${
-              tab === 'marks' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
+            className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+              tab === 'marks' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >Marks Entry</button>
           <button
             onClick={() => setTab('attendance')}
-            className={`px-4 py-2 text-sm font-medium ${
-              tab === 'attendance' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
+            className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+              tab === 'attendance' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >Attendance</button>
           <button
             onClick={() => setTab('resources')}
-            className={`px-4 py-2 text-sm font-medium ${
-              tab === 'resources' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
+            className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+              tab === 'resources' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >Resources</button>
                     <button
             onClick={() => setTab('assignments')}
-            className={`px-4 py-2 text-sm font-medium ${
-              tab === 'assignments' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
+            className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+              tab === 'assignments' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >Assignments</button>
           <button
   onClick={() => setTab('announcements')}
-  className={`px-4 py-2 text-sm font-medium ${
-    tab === 'announcements' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
+  className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+    tab === 'announcements' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
   }`}
 >Announcements</button>
           <button
             onClick={() => setTab('quizzes')}
-            className={`px-4 py-2 text-sm font-medium ${
-              tab === 'quizzes' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
+            className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+              tab === 'quizzes' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >Quizzes</button>
         </div>
