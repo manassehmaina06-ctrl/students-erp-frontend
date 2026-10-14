@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import StaffLayout from '../components/StaffLayout';
+import { PageHeader, StatCard } from '../components/ui';
 
 const STATUS_PILL = {
   approved:          'bg-indigo-100 text-indigo-800',
@@ -56,26 +57,20 @@ const FinanceDashboard = () => {
    return (
     <StaffLayout>
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">💰 Finance — Applications</h1>
-      <div className="grid grid-cols-5 gap-4 mb-8">
-        {[
-          { label: 'In Queue',         value: counts.total,        color: 'border-blue-400 text-blue-600' },
-          { label: 'To Validate',      value: counts.toValidate,   color: 'border-yellow-400 text-yellow-600' },
-          { label: 'Awaiting Admit',   value: counts.admitted,     color: 'border-teal-400 text-teal-600' },
-          { label: 'Enrolled',         value: counts.enrolled,     color: 'border-purple-400 text-purple-600' },
-          { label: 'Pending Payments', value: pendingCount,        color: pendingCount > 0 ? 'border-red-500 text-red-600' : 'border-gray-300 text-gray-500', onClick: () => navigate('/erp/finance/pending') },
-        ].map((c) => (
-          <div
-            key={c.label}
-            onClick={c.onClick}
-            className={`bg-white rounded-xl shadow p-5 border-l-4 ${c.color} ${c.onClick ? 'cursor-pointer hover:shadow-md' : ''}`}
-          >
-            <p className="text-sm text-gray-500">{c.label}</p>
-            <p className="text-3xl font-bold">{c.value}</p>
-          </div>
-        ))}
-      </div>
+ <PageHeader
+  icon="💰"
+  title="Finance — Applications"
+  subtitle={counts.total + ' in queue · ' + pendingCount + ' pending payments'}
+/>
 
+<div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+  <StatCard icon="📋" label="In Queue"        value={counts.total}         accent="brand" />
+  <StatCard icon="🔍" label="To Validate"     value={counts.toValidate}    accent="amber" />
+  <StatCard icon="💳" label="Pending Payments" value={pendingCount}        accent="rose" />
+  <StatCard icon="⏸️" label="In Review"        value={counts.inReview}      accent="violet" />
+  <StatCard icon="🚀" label="Awaiting Admit"  value={counts.awaitingAdmit} accent="sky" />
+  <StatCard icon="🎓" label="Enrolled"         value={counts.enrolled}      accent="emerald" />
+</div>
       <div className="bg-white rounded-xl shadow overflow-hidden">
         <table className="w-full text-left">
           <thead className="bg-gray-50 text-gray-500 text-xs uppercase">

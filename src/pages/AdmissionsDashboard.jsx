@@ -3,6 +3,7 @@ import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import StaffLayout from '../components/StaffLayout';
+import { PageHeader, StatCard, Badge } from '../components/ui';
 
 const STATUS_PILL = {
   draft:             'bg-gray-100 text-gray-700',
@@ -51,23 +52,18 @@ const AdmissionsDashboard = () => {
    return (
     <StaffLayout>
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Admissions — Applications</h1>
+    <PageHeader
+  icon="🎯"
+  title="Admissions — Applications"
+  subtitle={counts.total + ' applications · ' + counts.pending + ' pending review'}
+/>
 
-        {/* Stat cards */}
-        <div className="grid grid-cols-4 gap-4 mb-8">
-          {[
-            { label: 'Total',    value: counts.total,    color: 'border-blue-400 text-blue-600' },
-            { label: 'Pending',  value: counts.pending,  color: 'border-yellow-400 text-yellow-600' },
-            { label: 'Accepted', value: counts.accepted, color: 'border-green-400 text-green-600' },
-            { label: 'Rejected', value: counts.rejected, color: 'border-red-400 text-red-600' },
-          ].map((c) => (
-            <div key={c.label} className={`bg-white rounded-xl shadow p-5 border-l-4 ${c.color}`}>
-              <p className="text-sm text-gray-500">{c.label}</p>
-              <p className={`text-3xl font-bold ${c.color.split(' ')[1]}`}>{c.value}</p>
-            </div>
-          ))}
-        </div>
-
+<div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+  <StatCard icon="📋" label="Total Applications" value={counts.total}    accent="brand" />
+  <StatCard icon="⏳" label="Pending Review"     value={counts.pending}  accent="amber" />
+  <StatCard icon="✅" label="Accepted"           value={counts.accepted} accent="emerald" />
+  <StatCard icon="❌" label="Rejected"           value={counts.rejected} accent="rose" />
+</div>
         {/* Applications table */}
         <div className="bg-white rounded-xl shadow overflow-hidden">
           <table className="w-full text-left">

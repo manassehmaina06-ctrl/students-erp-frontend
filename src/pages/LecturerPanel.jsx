@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import StaffLayout from '../components/StaffLayout';
+import { LoadingState } from '../components/LoadingState';
+import { PageHeader, Card, Badge } from '../components/ui';
 
 export default function LecturerPanel() {
   const navigate = useNavigate();
@@ -26,17 +28,18 @@ export default function LecturerPanel() {
   return (
     <StaffLayout>
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">📚 Lecturer Panel</h1>
-            {semester && (
-              <p className="text-sm text-gray-500 mt-1">
-                Current semester: <span className="font-medium">{semester.code}</span> ({semester.academicYear})
-              </p>
-            )}
-          </div>
-        </div>
-
+      <PageHeader
+  icon="📚"
+  title="Lecturer Panel"
+  subtitle={
+    semester
+      ? 'Current semester: ' + semester.code + ' · ' + semester.academicYear
+      : 'My teaching units'
+  }
+  actions={
+    <Badge tone="brand">{units.length} unit{units.length === 1 ? '' : 's'}</Badge>
+  }
+/>
         {error && <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 text-sm mb-4">{error}</div>}
 
         {loading ? (

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import StaffLayout from '../components/StaffLayout';
+import { PageHeader, StatCard } from '../components/ui';
+import { LoadingState } from '../components/LoadingState';
 
 const AcademicDashboard = () => {
   const [students, setStudents] = useState([]);
@@ -27,23 +29,28 @@ const AcademicDashboard = () => {
     fetchData();
   }, [token]);
 
-  if (loading) {
-    return (
-      <StaffLayout>
-        <div className="flex justify-center items-center h-64">
-          <div className="text-gray-500">Loading…</div>
-        </div>
-      </StaffLayout>
-    );
-  }
+ if (loading) {
+  return (
+    <StaffLayout>
+      <LoadingState />
+    </StaffLayout>
+  );
+}
 
   return (
     <StaffLayout>
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center gap-3 mb-8">
-          <span className="text-3xl">📚</span>
-          <h2 className="text-3xl font-bold text-gray-800">Academic Dashboard</h2>
-        </div>
+       <PageHeader
+  icon="📚"
+  title="Academic Dashboard"
+  subtitle={students.length + ' students · ' + programmes.length + ' programmes'}
+/>
+
+<div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+  <StatCard icon="👨‍🎓" label="Students"    value={students.length}   accent="brand" />
+  <StatCard icon="📖"  label="Programmes"  value={programmes.length} accent="violet" />
+  <StatCard icon="🏛️"  label="Departments" value="—"                accent="emerald" />
+</div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Students card */}
