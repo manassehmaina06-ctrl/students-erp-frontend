@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import PortalLayout from './PortalLayout';
+import { PageHeader } from '../components/ui';
 
 export default function PortalRegistration() {
   const [data, setData]         = useState(null);
@@ -85,9 +86,14 @@ export default function PortalRegistration() {
   if (loading) return <PortalLayout title="Registration"><div className="p-8 text-gray-500">Loading…</div></PortalLayout>;
 
   if (!data?.semester) {
-    return (
-      <PortalLayout title="Registration">
-        <div className="max-w-4xl mx-auto p-6">
+   return (
+  <PortalLayout>
+    <div className="max-w-4xl mx-auto space-y-6">
+      <PageHeader
+        icon="📝"
+        title="Registration"
+        subtitle="Register for units and view your current semester"
+      />
           <div className="bg-white rounded-xl shadow p-8 text-center">
             <p className="text-gray-500">No current semester is open.</p>
           </div>

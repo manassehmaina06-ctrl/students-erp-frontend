@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import PortalLayout from './PortalLayout';
+import { PageHeader, Card, Button, Badge } from '../components/ui';
 
 const STATUS_COLORS = {
   submitted:         'bg-blue-100 text-blue-800',
@@ -33,8 +34,13 @@ export default function PortalHome() {
   if (loading) return <div className="p-8 text-gray-500">Loading…</div>;
 
    return (
-    <PortalLayout>
-      <div className="max-w-4xl mx-auto p-6 space-y-6">
+  <PortalLayout>
+  <div className="max-w-4xl mx-auto space-y-6">
+    <PageHeader
+      icon="🏠"
+      title={'Welcome' + (user?.username ? ', ' + user.username : '')}
+      subtitle="Your application, fees, and clearance status"
+    />
         {!summary?.hasApplication && (
           <div className="bg-white rounded-xl shadow p-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-2">Welcome!</h2>

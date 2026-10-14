@@ -4,6 +4,7 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import NotificationBell from '../components/NotificationBell';
 import PortalLayout from './PortalLayout';
+import { PageHeader } from '../components/ui';
 
 const OFFICE_LABEL = {
   finance:    'Finance',
@@ -89,9 +90,14 @@ export default function PortalClearance() {
   const current = data?.current;
   const history = data?.history || [];
 
-   return (
-    <PortalLayout title="Fee Statement">
-      <div className="max-w-4xl mx-auto p-6 space-y-6">
+ return (
+  <PortalLayout>
+    <div className="max-w-4xl mx-auto space-y-6">
+      <PageHeader
+        icon="✅"
+        title="Clearance"
+        subtitle="Request and track your clearance status"
+      />
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 text-sm">{error}</div>
         )}
