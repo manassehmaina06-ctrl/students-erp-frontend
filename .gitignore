@@ -34,3 +34,4 @@ backend/uploads/*
 *.bak
 *.bak2
 *.bak3
+backend/src/
