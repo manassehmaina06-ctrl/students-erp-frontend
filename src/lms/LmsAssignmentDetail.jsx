@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api/axios';
+import { useConfirm } from '../components/ConfirmDialog';
 
 export default function LmsAssignmentDetail() {
   const { assignmentId } = useParams();
@@ -10,6 +11,7 @@ export default function LmsAssignmentDetail() {
   const [toast, setToast]           = useState('');
   const [file, setFile]             = useState(null);
   const [note, setNote]             = useState('');
+  const confirm = useConfirm();
   const [submitting, setSubmitting] = useState(false);
   const fileRef = useRef(null);
 
@@ -50,7 +52,13 @@ export default function LmsAssignmentDetail() {
   };
 
   const withdraw = async () => {
-    if (!window.confirm('Withdraw your submission? You can submit again before the deadline.')) return;
+const ok = await confirm({
+  message: 'Withdraw your submission? You can submit again before the deadline.',
+  title: 'Withdraw submission?',
+  confirmLabel: 'Withdraw',
+  danger: true,
+});
+if (!ok) return;
     try {
       await api.delete(`/lms/me/assignments/${assignmentId}/submit`);
       setToast('Submission withdrawn');

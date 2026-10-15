@@ -80,6 +80,7 @@ export default function PortalFees() {
 
    return (
     <PortalLayout title="Fee Statement">
+      <PageHeader icon="💰" title="Fee Statement" subtitle="Bills, payments, and receipts" />
       <div className="max-w-4xl mx-auto p-6 space-y-6">
         {toast && (
           <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg p-3 text-sm">

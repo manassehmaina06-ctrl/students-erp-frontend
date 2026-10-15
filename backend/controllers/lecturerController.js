@@ -1,5 +1,5 @@
 const Unit          = require('../models/Unit');
-const UnitEnrollment = require('../models/UnitEnrollment');
+const UnitRegistration = require('../models/UnitRegistration');
 const Semester      = require('../models/Semester');
 
 // GET /api/lecturer/me
@@ -22,10 +22,13 @@ exports.getMyUnits = async (req, res) => {
 
     // Attach enrollment count per unit
     const unitIds = units.map((u) => u._id);
-    const counts = await UnitEnrollment.aggregate([
-      { $match: { unitId: { $in: unitIds }, status: 'enrolled' } },
-      { $group: { _id: '$unitId', n: { $sum: 1 } } },
-    ]);
+    const UnitRegistration = require('../models/UnitRegistration');
+const counts = await UnitRegistration.aggregate([
+  { $match: { unitIds: { $in: unitIds }, status: 'approved' } },
+  { $unwind: '$unitIds' },
+  { $match: { unitIds: { $in: unitIds } } },
+  { $group: { _id: '$unitIds', n: { $sum: 1 } } },
+]);
     const countMap = Object.fromEntries(counts.map((c) => [String(c._id), c.n]));
 
     res.json(units.map((u) => ({

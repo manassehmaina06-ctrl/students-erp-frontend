@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
+import { PageHeader } from '../components/ui';
 
 const GRADE_COLORS = {
   A: 'bg-green-100 text-green-800',
@@ -40,6 +41,11 @@ export default function LmsResults() {
           <p className="text-xs text-slate-400 mt-1">
             Marks will appear here once your lecturers post them.
           </p>
+          <PageHeader
+  icon="📊"
+  title="Results"
+  subtitle="Your academic performance across all units"
+/>
         </div>
       </div>
     );

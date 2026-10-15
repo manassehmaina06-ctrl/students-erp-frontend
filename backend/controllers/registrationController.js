@@ -39,34 +39,60 @@ exports.getMine = async (req, res) => {
 // GET /api/registrations/available-units
 // Lists units the student can pick for the current semester
 // (matches their programme, not exempted, and not already in their registration).
+// GET /api/registrations/available-units
+// Returns the full basket of core units for the student's programme + semester,
+// marking which ones are already picked or exempted.
 exports.getAvailableUnits = async (req, res) => {
   try {
     const student = await Student.findOne({ userId: req.user._id });
     if (!student) return res.status(404).json({ message: 'Student profile not found' });
 
     const programmeId = student.programmeInfo?.programme;
-    if (!programmeId) return res.json([]);
+    if (!programmeId) return res.json({ units: [], alreadyPicked: [], exempted: [] });
 
     const semester = await Semester.findOne({ isCurrent: true });
-    if (!semester) return res.json([]);
+    if (!semester) return res.json({ units: [], alreadyPicked: [], exempted: [] });
 
+    // Student's current level in the programme. Default = Semester 1 (first-year).
+    // If you track year/semester of study later, use it here.
+    const studentSemester = student.programmeInfo?.currentSemesterOfStudy || 1;
+
+    // The full basket: all core units for this programme + this semester of study.
+    const units = await Unit.find({
+      programmeIds: programmeId,
+      semester: studentSemester,
+    })
+      .populate('lecturerId', 'email username')
+      .sort({ code: 1 })
+      .lean();
+
+    // What's already in the student's draft registration
     const reg = await UnitRegistration.findOne({
       studentId: student._id,
       semester: semester.code,
     });
-    const alreadyIn = (reg?.unitIds || []).map((id) => String(id));
-    const exempted  = (student.exemptedUnitIds || []).map((id) => String(id));
+    const alreadyPicked = (reg?.unitIds || []).map((id) => String(id));
 
-    const units = await Unit.find({ programmeIds: programmeId })
-      .populate('lecturerId', 'email')
-      .sort({ semester: 1, code: 1 })
-      .lean();
+    // Exemptions
+    const exempted = (student.exemptedUnitIds || []).map((id) => String(id));
 
-    res.json(units.map((u) => ({
-      ...u,
-      alreadyEnrolled: alreadyIn.includes(String(u._id)),
-      exempted:        exempted.includes(String(u._id)),
-    })));
+    // Annotate each unit
+    const enriched = units.map((u) => {
+      const idStr = String(u._id);
+      return {
+        ...u,
+        picked:    alreadyPicked.includes(idStr),
+        exempted:  exempted.includes(idStr),
+      };
+    });
+
+    res.json({
+      units: enriched,
+      alreadyPicked,
+      exempted,
+      studentSemester,
+      semester: semester.code,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -74,6 +100,9 @@ exports.getAvailableUnits = async (req, res) => {
 
 // POST /api/registrations/me/start
 // Creates a draft registration if none exists.
+// POST /api/registrations/me/start
+// Creates a draft registration and auto-populates the basket with
+// the programme's current-semester core units (minus exemptions).
 exports.startMine = async (req, res) => {
   try {
     const student = await Student.findOne({ userId: req.user._id });
@@ -84,6 +113,9 @@ exports.startMine = async (req, res) => {
     if (!semester.registrationOpen) {
       return res.status(403).json({ message: 'Registration is closed for this semester' });
     }
+
+    const programmeId = student.programmeInfo?.programme;
+    if (!programmeId) return res.status(400).json({ message: 'Student has no programme assigned' });
 
     let reg = await UnitRegistration.findOne({
       studentId: student._id,
@@ -97,16 +129,33 @@ exports.startMine = async (req, res) => {
       });
     }
 
+    // Build the basket
+    const studentSemester = student.programmeInfo?.currentSemesterOfStudy || 1;
+    const basket = await Unit.find({
+      programmeIds: programmeId,
+      semester: studentSemester,
+      type: 'core',
+    }).select('_id').lean();
+
+    const exempted = (student.exemptedUnitIds || []).map((id) => String(id));
+    const initialUnits = basket
+      .map((u) => u._id)
+      .filter((id) => !exempted.includes(String(id)));
+
     if (!reg) {
       reg = await UnitRegistration.create({
         studentId:     student._id,
         studentNumber: student.studentNumber,
         semester:      semester.code,
         academicYear:  semester.academicYear,
-        unitIds:       [],
+        unitIds:       initialUnits,  // ← auto-populated
         status:        'draft',
         source:        'self',
       });
+    } else if (reg.unitIds.length === 0) {
+      // Fill an empty draft
+      reg.unitIds = initialUnits;
+      await reg.save();
     }
 
     res.json(reg);

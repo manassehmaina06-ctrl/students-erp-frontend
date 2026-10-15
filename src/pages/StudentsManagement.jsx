@@ -193,7 +193,7 @@ const StudentsManagement = () => {
                         </button>
                       )}
                       <button
-                        onClick={() => navigate(`/students/${s._id}`)}
+                    onClick={() => navigate(`/application/${s.applicationId || s.applicationNumber || s._id}`)}
                         className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm"
                       >
                         Open →

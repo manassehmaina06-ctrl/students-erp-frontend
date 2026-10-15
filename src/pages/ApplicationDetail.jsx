@@ -151,7 +151,17 @@ const ApplicationDetail = () => {
 
   const fetchApplication = async () => {
     try {
-      const res = await api.get(`/applications/${id}`);
+    // Try by application _id first; if that fails, try by applicationNumber
+let res;
+try {
+  res = await api.get(`/applications/${id}`);
+} catch (err) {
+  if (err.response?.status === 404) {
+    res = await api.get(`/applications/by-number/${id}`);
+  } else {
+    throw err;
+  }
+}
       setApplication(res.data);
       const sid = res.data.studentId?._id || res.data.studentId;
       if (sid && res.data.status === 'enrolled') {
@@ -369,10 +379,10 @@ const ApplicationDetail = () => {
               </button>
             </>
           )}
-          <button onClick={() => navigate(-1)}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg">
-            ← Back
-          </button>
+         <button onClick={() => navigate(-1)}
+  className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-lg transition">
+  ← Back
+</button>
         </div>
       </div>
 

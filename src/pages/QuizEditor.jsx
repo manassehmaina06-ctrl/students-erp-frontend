@@ -5,6 +5,7 @@ import StaffLayout from '../components/StaffLayout';
 import { useToast } from '../context/ToastContext';
 import { LoadingState, Spinner } from '../components/LoadingState';
 import EmptyState from '../components/EmptyState';
+import { useConfirm } from '../components/ConfirmDialog';
 
 const TYPE_LABEL = { mcq: 'Multiple Choice', truefalse: 'True/False', short: 'Short Answer' };
 
@@ -18,6 +19,7 @@ export default function QuizEditor() {
   const [loading, setLoading]       = useState(true);
   const [showQModal, setShowQModal] = useState(false);
   const [saving, setSaving]         = useState(false);
+  const confirm = useConfirm();
 
   const load = () => {
     setLoading(true);
@@ -33,7 +35,13 @@ export default function QuizEditor() {
   useEffect(() => { load(); }, [quizId]);
 
   const deleteQuestion = async (qid, idx) => {
-    if (!window.confirm('Delete question ' + idx + '?')) return;
+   const ok = await confirm({
+  message: 'Delete question ' + idx + '?',
+  title: 'Delete question',
+  confirmLabel: 'Delete',
+  danger: true,
+});
+if (!ok) return;
     try {
       await api.delete('/lecturer/quizzes/' + quizId + '/questions/' + qid);
       toast.success('Question deleted');
@@ -57,7 +65,13 @@ export default function QuizEditor() {
   };
 
   const close = async () => {
-    if (!window.confirm('Close this quiz? Students will no longer be able to start new attempts.')) return;
+    const ok = await confirm({
+  message: 'Close this quiz? Students will no longer be able to start new attempts.',
+  title: 'Close quiz',
+  confirmLabel: 'Close Quiz',
+  danger: false,
+});
+if (!ok) return;
     setSaving(true);
     try {
       await api.post('/lecturer/quizzes/' + quizId + '/close');

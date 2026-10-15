@@ -269,13 +269,13 @@ exports.getMyQuizzes = async (req, res) => {
         questionCount: qCount,
         attemptsUsed: mine.length,
         inProgressId: inProg ? inProg._id : null,
-        best: best ? {
-          attemptId: best._id,
-          percent: best.percent,
-          score: (best.autoScore || 0) + (best.manualScore || 0),
-          maxScore: best.maxScore,
-          status: best.status,
-        } : null,
+   best: best ? {
+  attemptId: best._id,
+  percent: best.percent,
+  score: (best.autoScore || 0) + (best.manualScore || 0),
+  maxScore: best.maxScore,
+  status: best.status,
+} : null,
       };
     }));
 
@@ -407,9 +407,9 @@ exports.getMyAttempt = async (req, res) => {
     const quiz = await Quiz.findById(attempt.quizId).lean();
     const questions = await QuizQuestion.find({ quizId: attempt.quizId }).sort({ order: 1 }).lean();
 
-    // After submission, always reveal correct answers for auto-graded questions
-    const submitted = attempt.status !== 'in-progress';
-    const reveal = submitted || (quiz.showCorrectAnswers && attempt.status === 'graded');
+   // After the student has submitted, always reveal the correct answer for auto-graded questions
+const submitted = attempt.status !== 'in-progress';
+const reveal = submitted || (quiz.showCorrectAnswers && attempt.status === 'graded');
 
     res.json({
       attempt,

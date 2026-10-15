@@ -25,3 +25,12 @@ dist-ssr
 *.bak
 *.bak2
 *.bak3
+# User uploads — keep local only
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Temp/broken files
+*.jsxcode
+*.bak
+*.bak2
+*.bak3

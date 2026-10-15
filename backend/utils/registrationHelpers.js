@@ -4,7 +4,7 @@ const UnitRegistration = require('../models/UnitRegistration');
 const Student          = require('../models/Student');
 
 const MIN_UNITS = 6;
-const MAX_UNITS = 8;
+const MAX_UNITS = 7;
 
 // Validate a registration's unit count against the min/max rules.
 // Returns { valid, reason } — reason is null if valid.

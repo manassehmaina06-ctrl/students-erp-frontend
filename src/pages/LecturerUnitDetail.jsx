@@ -157,6 +157,7 @@ export default function LecturerUnitDetail() {
   const createQuiz = async (e) => {
     e.preventDefault();
     if (!quizForm.title.trim()) return setError('Title required');
+
     setSavingQuiz(true); setError('');
     try {
       const r = await api.post(`/lecturer/units/${unitId}/quizzes`, {
@@ -217,7 +218,6 @@ export default function LecturerUnitDetail() {
     published: 'bg-green-100 text-green-800',
     closed:    'bg-blue-100 text-blue-800',
   };
-
   const openAnnModal = () => {
     setAnnForm({ title: '', body: '', priority: 'normal', file: null });
     if (annFileRef.current) annFileRef.current.value = '';
@@ -598,47 +598,47 @@ export default function LecturerUnitDetail() {
         )}
 
         {/* Tabs jameni  */}
-        <div className="flex gap-1 mb-6 p-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-x-auto">
+        <div className="flex gap-1 mb-6 border-b border-gray-200">
           <button
             onClick={() => setTab('assessments')}
-            className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
-              tab === 'assessments' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+            className={`px-4 py-2 text-sm font-medium ${
+              tab === 'assessments' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
             }`}
           >Assessments</button>
           <button
             onClick={() => setTab('marks')}
-            className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
-              tab === 'marks' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+            className={`px-4 py-2 text-sm font-medium ${
+              tab === 'marks' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
             }`}
           >Marks Entry</button>
           <button
             onClick={() => setTab('attendance')}
-            className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
-              tab === 'attendance' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+            className={`px-4 py-2 text-sm font-medium ${
+              tab === 'attendance' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
             }`}
           >Attendance</button>
           <button
             onClick={() => setTab('resources')}
-            className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
-              tab === 'resources' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+            className={`px-4 py-2 text-sm font-medium ${
+              tab === 'resources' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
             }`}
           >Resources</button>
                     <button
             onClick={() => setTab('assignments')}
-            className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
-              tab === 'assignments' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+            className={`px-4 py-2 text-sm font-medium ${
+              tab === 'assignments' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
             }`}
           >Assignments</button>
           <button
   onClick={() => setTab('announcements')}
-  className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
-    tab === 'announcements' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+  className={`px-4 py-2 text-sm font-medium ${
+    tab === 'announcements' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
   }`}
 >Announcements</button>
           <button
             onClick={() => setTab('quizzes')}
-            className={`px-3.5 py-1.5 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
-              tab === 'quizzes' ? 'bg-brand-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+            className={`px-4 py-2 text-sm font-medium ${
+              tab === 'quizzes' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'
             }`}
           >Quizzes</button>
         </div>
@@ -1004,8 +1004,7 @@ export default function LecturerUnitDetail() {
             </div>
           </>
         )}
-     
-                {/* ===== QUIZZES TAB ===== */}
+             {/* ===== QUIZZES TAB ===== */}
         {tab === 'quizzes' && (
           <>
             <div className="flex justify-end mb-4">
@@ -1086,7 +1085,7 @@ export default function LecturerUnitDetail() {
           </>
         )}
 
-{/* ===== ANNOUNCEMENTS TAB ===== */}
+        {/* ===== ANNOUNCEMENTS TAB ===== */}
         {tab === 'announcements' && (
           <>
             <div className="flex justify-end mb-4">
@@ -1453,9 +1452,7 @@ export default function LecturerUnitDetail() {
           </form>
         </div>
       )}
-    
-
-            {showQuizModal && (
+          {showQuizModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
           <form onSubmit={createQuiz} className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 max-h-[90vh] overflow-auto">
             <h2 className="text-xl font-bold text-gray-800 mb-4">New Quiz</h2>
@@ -1525,7 +1522,8 @@ export default function LecturerUnitDetail() {
         </div>
       )}
 
-{showAnnModal && (
+
+      {showAnnModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
           <form onSubmit={createAnnouncement} className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 max-h-[90vh] overflow-auto">
             <h2 className="text-xl font-bold text-gray-800 mb-4">New Announcement</h2>

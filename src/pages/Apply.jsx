@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PersonalDetails from '../components/StudentApplication/Steps/PersonalDetails';
 import ProgrammeInfo from '../components/StudentApplication/Steps/ProgrammeInfo';
@@ -11,10 +11,33 @@ import Review from '../components/StudentApplication/Review';
 import Payment from '../components/StudentApplication/Payment';
 
 const Apply = () => {
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({});
+  const [step, setStep] = useState(() => {
+    const saved = localStorage.getItem(STORAGE_KEY + '-step');
+    return saved ? Number(saved) : 1;
+  });
+  const STORAGE_KEY = 'student-application-draft';
+
+  const [formData, setFormData] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : {};
+    } catch { return {}; }
+  });
+
+  // Persist on every change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+    } catch { /* ignore */ }
+  }, [formData]);
   const [appNumber, setAppNumber] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY + '-step', String(step));
+    } catch { /* ignore */ }
+  }, [step]);
 
   const next = () => setStep(s => s + 1);
   const prev = () => setStep(s => s - 1);

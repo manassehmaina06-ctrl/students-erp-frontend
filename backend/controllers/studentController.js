@@ -91,11 +91,30 @@ exports.getAllStudents = async (req, res) => {
     if (req.query.enrolledOnly === 'true') {
       filter.studentNumber = { $exists: true, $ne: null };
     }
+
     const students = await Student.find(filter)
       .populate('userId', 'email role')
       .populate('programmeInfo.programme')
-      .sort({ studentNumber: -1, createdAt: -1 });
-    res.json(students);
+      .sort({ studentNumber: -1, createdAt: -1 })
+      .lean();
+
+    // Attach the linked Application _id for each student
+    const Application = require('../models/Application');
+    const studentIds = students.map((s) => s._id);
+    const apps = await Application.find({ studentId: { $in: studentIds } })
+      .select('_id studentId applicationNumber')
+      .lean();
+    const appMap = Object.fromEntries(
+      apps.map((a) => [String(a.studentId), { id: a._id, number: a.applicationNumber }])
+    );
+
+    const enriched = students.map((s) => ({
+      ...s,
+      applicationId:     appMap[String(s._id)]?.id || null,
+      applicationNumber: s.applicationNumber || appMap[String(s._id)]?.number || null,
+    }));
+
+    res.json(enriched);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

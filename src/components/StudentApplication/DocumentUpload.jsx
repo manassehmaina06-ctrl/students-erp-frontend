@@ -1,114 +1,205 @@
 import React, { useState } from 'react';
 import api from '../../api/axios';
-import { useAuth } from '../../context/AuthContext';
+
+// Required document types
+const REQUIRED_DOCS = [
+  { key: 'nationalId',  label: 'National ID / Birth Certificate', icon: '🆔', required: true,
+    accept: '.pdf,.jpg,.jpeg,.png' },
+  { key: 'kcse',        label: 'KCSE Certificate / Result Slip',  icon: '📜', required: true,
+    accept: '.pdf,.jpg,.jpeg,.png' },
+  { key: 'transcripts', label: 'Transcripts (if any)',            icon: '📁', required: false,
+    accept: '.pdf,.jpg,.jpeg,.png' },
+  { key: 'photo',       label: 'Passport Photo',                  icon: '📷', required: true,
+    accept: '.jpg,.jpeg,.png' },
+];
 
 const DocumentUpload = ({ data, setData, next, prev }) => {
-  const [file, setFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [docs, setDocs] = useState(data || []);
-  const { token } = useAuth();
+  // docs: { [key]: { _id, name, url, key } }
+  const [docs, setDocs] = useState(() => {
+    // Hydrate from data if present
+    const initial = {};
+    if (Array.isArray(data)) {
+      data.forEach((d) => { if (d.key) initial[d.key] = d; });
+    }
+    return initial;
+  });
 
-  const uploadFile = async () => {
+  const [uploading, setUploading] = useState({});
+  const [error, setError] = useState('');
+
+  const uploadFile = async (docKey, file) => {
     if (!file) return;
+
+    setError('');
+    setUploading((u) => ({ ...u, [docKey]: true }));
+
     const formData = new FormData();
     formData.append('document', file);
-    setUploading(true);
+    formData.append('docKey', docKey);
+
     try {
-  const res = await api.post('/documents/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const res = await api.post('/documents/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-      setDocs([...docs, res.data]);
-      setFile(null);
-      // Reset file input
-      document.getElementById('fileInput').value = '';
+
+      // Remove old version of same docType if any
+      setDocs((prev) => ({
+        ...prev,
+        [docKey]: { ...res.data, key: docKey },
+      }));
     } catch (err) {
-      alert('Upload failed: ' + (err.response?.data?.message || err.message));
+      setError('Upload failed: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setUploading((u) => ({ ...u, [docKey]: false }));
     }
-    setUploading(false);
   };
 
-  const removeDocument = (docId) => {
-    setDocs(docs.filter(d => d._id !== docId));
+  const removeDocument = (docKey) => {
+    setDocs((prev) => {
+      const next = { ...prev };
+      delete next[docKey];
+      return next;
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (docs.length === 0) {
-      alert('Please upload at least one document');
+    setError('');
+
+    // Check required docs
+    const missing = REQUIRED_DOCS.filter((d) => d.required && !docs[d.key]);
+    if (missing.length > 0) {
+      setError('Please upload: ' + missing.map((m) => m.label).join(', '));
       return;
     }
-    setData(docs);
+
+    setData(Object.values(docs));
     next();
   };
 
+  const uploadedCount = Object.keys(docs).length;
+  const totalRequired = REQUIRED_DOCS.filter((d) => d.required).length;
+  const uploadedRequired = REQUIRED_DOCS.filter((d) => d.required && docs[d.key]).length;
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="flex items-center gap-2 pb-4 border-b border-gray-100">
+      <div className="flex items-center gap-2 pb-4 border-b border-slate-100 dark:border-slate-800">
         <span className="text-2xl">📎</span>
-        <h3 className="text-xl font-semibold text-gray-700">Document Upload</h3>
-        <span className="text-xs text-gray-400 ml-auto">Step 4 of 6</span>
+        <h3 className="font-display text-xl font-semibold text-slate-800 dark:text-slate-100">Document Upload</h3>
+        <span className="text-xs text-slate-400 ml-auto">Step 4 of 9</span>
       </div>
 
-      <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-blue-400 transition">
-        <input
-          id="fileInput"
-          type="file"
-          onChange={(e) => setFile(e.target.files[0])}
-          className="hidden"
-        />
-        <label htmlFor="fileInput" className="cursor-pointer">
-          <div className="text-4xl mb-2">📄</div>
-          <p className="text-gray-600">Click to select a file</p>
-          <p className="text-xs text-gray-400 mt-1">PDF, JPG, PNG accepted (max 5MB)</p>
-        </label>
-        {file && (
-          <div className="mt-3 text-sm text-gray-600">
-            Selected: <span className="font-medium">{file.name}</span>
-            <button
-              type="button"
-              onClick={uploadFile}
-              disabled={uploading}
-              className="ml-3 bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded transition disabled:opacity-50"
-            >
-              {uploading ? 'Uploading...' : 'Upload'}
-            </button>
-          </div>
-        )}
+      <div className="bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-900 rounded-lg p-4 text-sm text-blue-700 dark:text-blue-300">
+        ℹ️ Upload the following documents. Max 5 MB each. PDF, JPG, or PNG.
+        <div className="mt-2 text-xs font-medium">
+          Required: {uploadedRequired} / {totalRequired} · Uploaded: {uploadedCount}
+        </div>
       </div>
 
-      {docs.length > 0 && (
-        <div>
-          <h4 className="text-sm font-medium text-gray-700 mb-2">Uploaded Documents:</h4>
-          <ul className="space-y-2">
-            {docs.map((d) => (
-              <li key={d._id} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <span className="text-sm">{d.name}</span>
-                <button
-                  type="button"
-                  onClick={() => removeDocument(d._id)}
-                  className="text-red-500 hover:text-red-700 text-sm"
-                >
-                  ✕ Remove
-                </button>
-              </li>
-            ))}
-          </ul>
+      {error && (
+        <div className="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 rounded-lg p-3 text-sm">
+          {error}
         </div>
       )}
 
-      <div className="flex justify-between pt-4 border-t border-gray-100">
+      <div className="space-y-3">
+        {REQUIRED_DOCS.map((def) => {
+          const doc = docs[def.key];
+          const isUploading = uploading[def.key];
+          const inputId = 'file_' + def.key;
+
+          return (
+            <div
+              key={def.key}
+              className={
+                'border-2 rounded-xl p-4 transition ' +
+                (doc
+                  ? 'border-emerald-300 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/20'
+                  : 'border-dashed border-slate-200 dark:border-slate-700 hover:border-brand-400')
+              }
+            >
+              <div className="flex items-start gap-3">
+                <div className="text-2xl shrink-0">{def.icon}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-medium text-sm text-slate-800 dark:text-slate-100">
+                      {def.label}
+                    </p>
+                    {def.required && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 font-semibold uppercase">
+                        Required
+                      </span>
+                    )}
+                    {doc && !isUploading && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-semibold">
+                        ✓ Uploaded
+                      </span>
+                    )}
+                    {isUploading && (
+                      <span className="text-[10px] text-brand-600 dark:text-brand-400 font-medium">
+                        Uploading…
+                      </span>
+                    )}
+                  </div>
+
+                  {!doc && !isUploading && (
+                    <>
+                      <input
+                        id={inputId}
+                        type="file"
+                        accept={def.accept}
+                        className="hidden"
+                        onChange={(e) => uploadFile(def.key, e.target.files[0])}
+                      />
+                      <label
+                        htmlFor={inputId}
+                        className="inline-block mt-2 text-sm font-medium text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 cursor-pointer"
+                      >
+                        + Choose file
+                      </label>
+                    </>
+                  )}
+
+                  {doc && !isUploading && (
+                    <div className="mt-2 flex items-center gap-3 flex-wrap">
+                      <span className="text-xs text-slate-600 dark:text-slate-400 truncate max-w-[12rem]">
+                        📄 {doc.name}
+                      </span>
+                      <a
+                        href={doc.url || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-brand-600 dark:text-brand-400 hover:underline"
+                      >
+                        View
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => removeDocument(def.key)}
+                        className="text-xs text-rose-600 hover:text-rose-800"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="flex justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
         <button
           type="button"
           onClick={prev}
-          className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-8 py-2.5 rounded-lg transition"
+          className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-medium px-8 py-2.5 rounded-lg transition"
         >
           ← Back
         </button>
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-2.5 rounded-lg transition shadow-sm hover:shadow-md"
+          className="bg-brand-600 hover:bg-brand-700 text-white font-medium px-8 py-2.5 rounded-lg transition shadow-sm hover:shadow-md"
         >
           Next Step →
         </button>
